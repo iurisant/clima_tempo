@@ -94,7 +94,7 @@ export default function Home() {
           return SolNuvem
           break;
         case "scattered clouds":
-          return Nuvem
+          return SolNuvem
           break;
         case "broken clouds":
           return Nuvens
@@ -127,7 +127,7 @@ export default function Home() {
           return LuaNuvem
           break;
         case "scattered clouds":
-          return Nuvem
+          return LuaNuvem
           break;
         case "broken clouds":
           return Nuvens
