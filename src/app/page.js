@@ -136,7 +136,7 @@ export default function Home() {
           url={Vento}
           alt={"Vento"}
           title={"Vento"}
-          info={data.wind ? <>{(data.wind.speed / 3.6).toFixed(1)} Km/h</> : '- -'}
+          info={data.wind ? <>{(data.wind.speed * 3.6).toFixed(1)} Km/h</> : '- -'}
         />
         <MoreInfos
           url={PorSol}
