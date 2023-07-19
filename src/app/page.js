@@ -11,12 +11,17 @@ import PorSol from "@/img/sunset.svg"
 import Sol from "@/img/sun.svg"
 import Lua from "@/img/moon.svg"
 import SolNuvem from "@/img/sun_cloud.svg"
-import LuaNuvem from "@/img/sun_cloud.svg"
+import LuaNuvem from "@/img/moon_cloud.svg"
 import Nuvem from "@/img/cloud.svg"
 import Nuvens from "@/img/clouds.svg"
 import NuvemChuva from "@/img/cloud_rain.svg"
 import SolChuva from "@/img/cloud_rain.svg"
 import LuaChuva from "@/img/cloud_rain.svg"
+import SolRaio from "@/img/sun_rain.svg"
+import LuaRaio from "@/img/moon_rain.svg"
+import Floco from "@/img/snowflake.svg"
+import Nevoa from "@/img/mist.svg"
+
 
 import { useEffect, useState } from 'react'
 
@@ -76,15 +81,79 @@ export default function Home() {
     const hrPorSol = timeConverter(por, 2)
 
     const date = new Date();
-    const time = date.getHours() + ':' + date.getMinutes();
+    const time = date.getHours();
 
     console.log(clima, hrNascSol, hrPorSol, time)
 
-    if (time >= hrPorSol) {
-      console.log("DIA")
+    if (time >= hrNascSol && time <= hrPorSol) {
+      switch (clima) {
+        case "clear sky":
+          return Sol
+          break;
+        case "few clouds":
+          return SolNuvem
+          break;
+        case "scattered clouds":
+          return Nuvem
+          break;
+        case "broken clouds":
+          return Nuvens
+          break;
+        case "shower rain":
+          return NuvemChuva
+          break;
+        case "rain":
+          return SolChuva
+          break;
+        case "thunderstorm":
+          return SolRaio
+          break;
+        case "snow":
+          return Floco
+          break;
+        case "mist":
+          return Nevoa
+          break;
+        default:
+          return Sol
+          break;
+      }
+    } else {
+      switch (clima) {
+        case "clear sky":
+          return Lua
+          break;
+        case "few clouds":
+          return LuaNuvem
+          break;
+        case "scattered clouds":
+          return Nuvem
+          break;
+        case "broken clouds":
+          return Nuvens
+          break;
+        case "shower rain":
+          return NuvemChuva
+          break;
+        case "rain":
+          return LuaChuva
+          break;
+        case "thunderstorm":
+          return LuaRaio
+          break;
+        case "snow":
+          return Floco
+          break;
+        case "mist":
+          return Nevoa
+          break;
+        default:
+          return Lua
+          break;
+      }
     }
 
-    return Lua
+
   }
 
   return (
