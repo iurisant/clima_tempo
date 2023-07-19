@@ -1,0 +1,9 @@
+{
+  "name": "Clima Tempo",
+  "description": "Site para verificar o clima da sua cidade",
+  "language": "ReactJS, NextJS, JavaScript, TailwindCSS",
+  "url": "https://i.imgur.com/WoGsZlg.png",
+  "status": "Concluído",
+  "site": "https://iurisant.github.io/clima_tempo/",
+  "repositories": "https://github.com/iurisant/clima_tempo"
+}
