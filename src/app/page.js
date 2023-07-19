@@ -59,15 +59,21 @@ export default function Home() {
     }
   };
 
-  function timeConverter(UNIX_timestamp) {
+  function timeConverter(UNIX_timestamp, op) {
     const date = new Date(UNIX_timestamp * 1000);
-    const time = date.getHours() + ':' + date.getMinutes();
-    return time;
+    if (op == 1) {
+      const time = date.getHours() + ':' + date.getMinutes();
+      return time;
+    } else if (op == 2) {
+      const time = date.getHours()
+      return time;
+    }
+
   }
 
   function imgTemp(clima, nasc, por) {
-    const hrNascSol = timeConverter(nasc)
-    const hrPorSol = timeConverter(por)
+    const hrNascSol = timeConverter(nasc, 2)
+    const hrPorSol = timeConverter(por, 2)
 
     const date = new Date();
     const time = date.getHours() + ':' + date.getMinutes();
@@ -136,7 +142,7 @@ export default function Home() {
           url={PorSol}
           alt={"Pôr do Sol"}
           title={"Pôr do Sol"}
-          info={data.sys ? timeConverter(data.sys.sunset) : '- -'}
+          info={data.sys ? timeConverter(data.sys.sunset, 1) : '- -'}
         />
       </div>
       <div>
