@@ -22,11 +22,11 @@ import LuaRaio from "@/img/moon_rain.svg"
 import Floco from "@/img/snowflake.svg"
 import Nevoa from "@/img/mist.svg"
 
-
 import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const [data, setData] = useState("");
+  const [data1, setData1] = useState([]);
+  const [data2, setData2] = useState([]);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
 
@@ -56,9 +56,12 @@ export default function Home() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=8eb1bc2f7effa276175f2ef2fd11079d`);
-      const jsonData = await response.json();
-      setData(jsonData);
+      const response1 = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=8eb1bc2f7effa276175f2ef2fd11079d&units=metric`);
+      const response2 = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=8eb1bc2f7effa276175f2ef2fd11079d&units=metric`);
+      const jsonData1 = await response1.json();
+      const jsonData2 = await response2.json();
+      setData1(jsonData1);
+      setData2(jsonData2.list);
     } catch (error) {
       console.error(error);
     }
@@ -76,15 +79,47 @@ export default function Home() {
 
   }
 
+  function imgTemp2(clima) {
+    switch (clima) {
+      case "01d", "01n":
+        return Sol
+        break;
+      case "02d", "02n":
+        return SolNuvem
+        break;
+      case "03d", "03n":
+        return SolNuvem
+        break;
+      case "04d", "04n":
+        return Nuvens
+        break;
+      case "09d", "09n":
+        return NuvemChuva
+        break;
+      case "10d", "10n":
+        return SolChuva
+        break;
+      case "11d", "11n":
+        return SolRaio
+        break;
+      case "13d", "13n":
+        return Floco
+        break;
+      case "50d", "50n":
+        return Nevoa
+        break;
+      default:
+        return Sol
+        break;
+    }
+  }
+
   function imgTemp(clima, nasc, por) {
     const hrNascSol = timeConverter(nasc, 2)
     const hrPorSol = timeConverter(por, 2)
 
     const date = new Date();
     const time = date.getHours();
-
-    console.log(clima, hrNascSol, hrPorSol, time)
-
     if (time >= hrNascSol && time <= hrPorSol) {
       switch (clima) {
         case "clear sky":
@@ -152,8 +187,14 @@ export default function Home() {
           break;
       }
     }
+  }
 
-
+  function diaSemana(dia) {
+    const data = new Date(dia);
+    const numeroDiaSemana = data.getDay();
+    const nomesDiasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    const nomeDiaSemana = nomesDiasSemana[numeroDiaSemana];
+    return nomeDiaSemana
   }
 
   return (
@@ -161,30 +202,30 @@ export default function Home() {
       <div>
         <div className='flex justify-center items-center gap-4 mb-4'>
           <span className=' text-xl'>
-            {data.name ? <>{data.name}</> : 'Localização'}
+            {data1.name ? <>{data1.name}</> : 'Localização'}
           </span>
         </div>
         <div className='flex justify-center items-center gap-2'>
-          {data.weather ?
+          {data1.weather ?
             <Image
               className='min-h-[100px] min-w-[100px]'
-              src={imgTemp(data.weather[0].description, data.sys.sunrise, data.sys.sunset)}
+              src={imgTemp(data1.weather[0].description, data1.sys.sunrise, data1.sys.sunset)}
               alt={"Sol"}
               width={100}
               height={100}
             /> : <></>
           }
-          <strong className=' text-6xl'>{data.main ? <>{Math.round(data.main.temp_min - 273)}</> : '0'}º</strong>
+          <strong className=' text-6xl'>{data1.main ? <>{Math.round(data1.main.temp)}</> : '0'}º</strong>
         </div>
         <div className='flex justify-center items-center gap-4 mt-4 text-white/70'>
           <span>
-            Min: {data.main ? <>{Math.round(data.main.temp_min - 273)}</> : '0'}º
+            Min: {data1.main ? <>{Math.round(data1.main.temp_min)}</> : '0'}º
           </span>
           <span>
             |
           </span>
           <span>
-            Max: {data.main ? <>{Math.round(data.main.temp_min - 273)}</> : '0'}º
+            Max: {data1.main ? <>{Math.round(data1.main.temp_min)}</> : '0'}º
           </span>
         </div>
       </div>
@@ -199,21 +240,56 @@ export default function Home() {
           url={Umidade}
           alt={"Umidade"}
           title={"Umidade"}
-          info={data.main ? <>{data.main.humidity}%</> : '- -'}
+          info={data1.main ? <>{data1.main.humidity}%</> : '- -'}
         />
         <MoreInfos
           url={Vento}
           alt={"Vento"}
           title={"Vento"}
-          info={data.wind ? <>{(data.wind.speed * 3.6).toFixed(1)} Km/h</> : '- -'}
+          info={data1.wind ? <>{(data1.wind.speed * 3.6).toFixed(1)} Km/h</> : '- -'}
         />
         <MoreInfos
           url={PorSol}
           alt={"Pôr do Sol"}
           title={"Pôr do Sol"}
-          info={data.sys ? timeConverter(data.sys.sunset, 1) : '- -'}
+          info={data1.sys ? timeConverter(data1.sys.sunset, 1) : '- -'}
         />
+        <div className='flex flex-col justify-center items-center max-w-[92%] w-full gap-8 mt-8 overflow-hidden'>
+          <h1 className='text-xl'>Previsões</h1>
+          <div className='flex flex-col justify-between items-center w-full bg-white/5 border border-white/10 rounded-xl p-8'>
+            <ul className='flex justify-between w-full pb-4 text-white/70'>
+              <li className='w-[100px]'>Dia</li>
+              <li className='w-[69px]'>Umidade</li>
+              <li className='w-[43px]'>Clima</li>
+              <li className='w-[27px]'>Min</li>
+              <li className='w-[32px]'>Max</li>
+            </ul>
+            {data2.length > 0 && data2.map((repo, index) => {
+              return (
+                <>
+                  {(index == 2 || index == 10 || index == 18 || index == 26 || index == 34) &&
+                    <ul key={index} className='flex justify-between items-center w-full my-0.5'>
+                      <li className='w-[100px] truncate'>{data2[index].dt_txt ? <>{diaSemana((data2[index].dt_txt).substring(0, 10))}</> : '- -'}</li>
+                      <li className='flex justify-center w-[69px]'>{data2[index].main ? <>{data2[index].main.humidity}%</> : '- -'}</li>
+                      <li className='flex justify-center w-[43px] h-[30px]'>
+                        <Image
+                          src={imgTemp2(data2[index].weather[0].icon)}
+                          alt="Clima"
+                          width={100}
+                          height={20}
+                        />
+                      </li>
+                      <li className='flex justify-center w-[27px]'>{data2[index].main ? <>{Math.round(data2[index].main.temp_min)}º</> : '- -'}</li>
+                      <li className='flex justify-center w-[32px]'>{data2[index].main ? <>{Math.round(data2[index].main.temp_max)}º</> : '- -'}</li>
+                    </ul>
+                  }
+                </>
+              )
+            })}
+          </div>
+        </div>
       </div>
+
       <div>
         by Iuri Santana | 2023
       </div>
